@@ -30,14 +30,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (empty($errors)) {
-        // Calculate total with tax and shipping
-        $sub_total = array_sum(array_map(function ($item) {
-            return $item['quantity'] * $item['price'];
-        }, $_SESSION['cart']));
+         // Calculate total with tax and shipping
+    $sub_total = array_sum(array_map(function ($item) {
+        return $item['quantity'] * $item['price'];
+    }, $_SESSION['cart']));
 
-        $tax = $sub_total * 0.13; // Assuming a 13% tax rate
-        $shipping_cost = $shipping_methods[$_POST['shipping_method']];
-        $total=$sub_total + $tax +$shipping_cost;
+    $tax = $sub_total * 0.13; // Assuming a 13% tax rate
+    $selected_shipping_method = $_POST['shipping_method'];
+    $shipping_cost = $shipping_methods[$selected_shipping_method];
+    $total = $sub_total + $tax + $shipping_cost;
+
 
         // Fetch user_id from the database using the username stored in the session
         $username = $_SESSION['username'];
@@ -272,13 +274,13 @@ document.addEventListener('DOMContentLoaded', () => {
     <tr>
         <td colspan="3" style="text-align: right;">Shipping:</td>
         <td>
-            <select name="shipping_method" id="shipping-method" required>
-                <?php
-                foreach ($shipping_methods as $method => $cost) {
-                    echo "<option value='$cost'>$method - $" . number_format($cost, 2) . "</option>";
-                }
-                ?>
-            </select>
+        <select name="shipping_method" id="shipping-method" required>
+    <?php
+    foreach ($shipping_methods as $method => $cost) {
+        echo "<option value='$method'>$method - $" . number_format($cost, 2) . "</option>";
+    }
+    ?>
+</select>
         </td>
     </tr>
     <tr>
@@ -292,76 +294,21 @@ document.addEventListener('DOMContentLoaded', () => {
             <button type="submit">Order</button>
         </div>
 
-   <div class="mobile-order-review">
-        <?php
-        $sub_total = 0;
-        foreach ($_SESSION['cart'] as $product_id => $details) {
-            $name = $details['name'];
-            $quantity = intval($details['quantity']);
-            $price = $details['price'];
-            $total = $price * $quantity;
-            $sub_total += $total;
-        ?>
-            <div class="order-item">
-                <span class="item-label">Product:</span>
-                <span><?php echo $name; ?></span>
-            </div>
-            <div class="order-item">
-                <span class="item-label">Quantity:</span>
-                <span><?php echo $quantity; ?></span>
-            </div>
-            <div class="order-item">
-                <span class="item-label">Price:</span>
-                <span>$<?php echo number_format($price, 2); ?></span>
-            </div>
-            <div class="order-item">
-                <span class="item-label">Total:</span>
-                <span>$<?php echo number_format($total, 2); ?></span>
-            </div>
-        <?php } ?>
-        
-        <div class="order-summary-item">
-            <span class="item-label">Subtotal:</span>
-            <span>$<?php echo number_format($sub_total, 2); ?></span>
-        </div>
-        <div class="order-summary-item">
-            <span class="item-label">Tax (13%):</span>
-            <span>$<?php echo number_format($sub_total * 0.13, 2); ?></span>
-        </div>
-        <div class="order-summary-item">
-            <span class="item-label">Shipping:</span>
-            <select name="shipping_method" id="shipping-method" required>
-    <?php
-    foreach ($shipping_methods as $method => $cost) {
-        echo "<option value='$method'>$method - $" . number_format($cost, 2) . "</option>";
-    }
-    ?>
-</select>
-
-
-        </div>
-        <div class="order-summary-item">
-            <span class="item-label">Total:</span>
-            <span>$<span id="total"><?php echo number_format($sub_total * 1.13 + $shipping_methods['standard'], 2); ?></span></span>
-        </div>
-        <!-- <button type="button" class="prev-step" data-step="3">Previous</button>
-    <button type="submit">Order</button> -->
-
-    </div>
-
     </form>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const shippingMethodSelect = document.getElementById('shipping-method');
     const totalSpan = document.getElementById('total');
 
     // Assuming these values are available from your PHP backend
     const subTotal = <?php echo $sub_total; ?>;
     const taxRate = 0.13;
+    const shippingMethods = <?php echo json_encode($shipping_methods); ?>;
 
     function updateTotal() {
-        const selectedShippingCost = parseFloat(shippingMethodSelect.value);
+        const selectedMethod = shippingMethodSelect.value;
+        const selectedShippingCost = shippingMethods[selectedMethod];
         const tax = subTotal * taxRate;
         const total = subTotal + tax + selectedShippingCost;
 
@@ -502,16 +449,14 @@ th {
 }
 /* Media query for mobile devices */
 @media screen and (max-width: 1000px) {
-  table {
-    display: none;
-  }
 
+   
   /* Mobile-friendly layout */
-  .mobile-order-review {
+  /* .mobile-order-review {
     display: flex;
     flex-direction: column;
     gap: 15px;
-  }
+  } */
 
   .order-item, .order-summary-item {
     display: flex;

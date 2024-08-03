@@ -14,6 +14,8 @@ unset($_SESSION['order']);
 
 <div class="container">
     <h2 class="thank-you">Thank you for your order!</h2>
+    <p>Total: $<?php echo number_format($order['total'], 2); ?></p>
+
     <h3>Shipping Details</h3>
     <div class="shipping-details">
         <p>Name: <?php echo htmlspecialchars($order['shipping_details']['name']); ?></p>

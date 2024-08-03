@@ -90,7 +90,13 @@ if (!empty($_SESSION['cart'])) {
     <div style="text-align: right; margin: 20px 10%;">
         <a href="checkout.php" class="checkout-button">Proceed to Checkout</a>
     </div>
-    
+    <style>
+        @media screen and (max-width: 1000px) {
+    table, thead, tbody, td, tr {
+        display: block;
+    }
+        }
+    </style>
     <?php
 } else {
     echo "<p>Your cart is empty.</p>";

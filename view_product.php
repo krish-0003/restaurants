@@ -249,7 +249,7 @@ if ($product_id == 0) {
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
     .product-content {
         flex-direction: column;
     }
@@ -266,6 +266,7 @@ if ($product_id == 0) {
         width: 60px;
         height: 60px;
     }
+    
 }
 
 @media (max-width: 480px) {

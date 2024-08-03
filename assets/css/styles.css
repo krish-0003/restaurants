@@ -263,7 +263,7 @@ header {
 .product-card__btn:hover {
     background-color: #C71729;
 }
-
+/* 
 @media (max-width: 480px) {
     .product-card {
         width: 100%;
@@ -290,7 +290,7 @@ header {
         padding: 8px 16px;
         font-size: 0.8rem;
     }
-}
+} */
 
 
 /* Footer styling */
@@ -538,9 +538,9 @@ tr:nth-child(odd) {
 
 /* Responsive styles */
 @media screen and (max-width: 1000px) {
-    table, thead, tbody, td, tr {
+    /* table, thead, tbody, td, tr {
         display: block;
-    }
+    } */
     .heading{
         display: none;
     }
