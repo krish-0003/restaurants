@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <?php
+
 // Get the total number of items in the cart
 $cart_count = 0;
 if (isset($_SESSION['cart'])) {
@@ -51,7 +52,7 @@ if (isset($_SESSION['cart'])) {
             top: 50px;
             left: 0;
             width: 100%;
-            background-color: #333;
+            background-color: white;
         }
 
         .nav-links-container.show {
@@ -77,7 +78,7 @@ if (isset($_SESSION['cart'])) {
         .bar {
             width: 25px;
             height: 3px;
-            background-color: white;
+            background-color: #555;
             margin: 5px 0;
         }
         nav .welcome-message{

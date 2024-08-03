@@ -16,7 +16,6 @@ $shipping_methods = [
     'standard' => 5.00,
     'express' => 15.00,
 ];
-
 // Server-side validation and processing
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -38,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $tax = $sub_total * 0.13; // Assuming a 13% tax rate
         $shipping_cost = $shipping_methods[$_POST['shipping_method']];
-        $total = $sub_total + $tax + $shipping_cost;
+        $total=$sub_total + $tax +$shipping_cost;
 
         // Fetch user_id from the database using the username stored in the session
         $username = $_SESSION['username'];
@@ -214,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <div class="container">
-    <form action="checkout.php" method="post">
+    <form action="checkout.php" method="post" >
         <!-- Step 1: Shipping Details -->
         <div id="step1" class="step">
     <h2>Shipping Details</h2>
@@ -269,26 +268,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td colspan="3" style="text-align: right;">Tax (13%):</td>
                     <td>$<?php echo number_format($sub_total * 0.13, 2); ?></td>
                     </tr>
-                <tr>
-                    <td colspan="3" style="text-align: right;">Shipping:</td>
-                    <td>
-                        <select name="shipping_method" required>
-                            <?php
-                            foreach ($shipping_methods as $method => $cost) {
-                                echo "<option value='$method'>$method - $" . number_format($cost, 2) . "</option>";
-                            }
-                            ?>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3" style="text-align: right;">Total:</td>
-                    <td>$<span
-                            id="total"><?php echo number_format($sub_total * 1.13 + $shipping_methods['standard'], 2); ?></span>
-                    </td>
-                </tr>
+                    <table>
+    <tr>
+        <td colspan="3" style="text-align: right;">Shipping:</td>
+        <td>
+            <select name="shipping_method" id="shipping-method" required>
+                <?php
+                foreach ($shipping_methods as $method => $cost) {
+                    echo "<option value='$cost'>$method - $" . number_format($cost, 2) . "</option>";
+                }
+                ?>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="text-align: right;">Total:</td>
+        <td>$<span id="total"><?php echo number_format($sub_total * 1.13 + $shipping_methods['standard'], 2); ?></span></td>
+    </tr>
+</table>
             </table>
-            <div class="mobile-order-review">
+         
+                <button type="button" class="prev-step" data-step="3" style="margin-top:10px">Previous</button>
+            <button type="submit">Order</button>
+        </div>
+
+   <div class="mobile-order-review">
         <?php
         $sub_total = 0;
         foreach ($_SESSION['cart'] as $product_id => $details) {
@@ -344,11 +348,33 @@ document.addEventListener('DOMContentLoaded', () => {
     <button type="submit">Order</button> -->
 
     </div>
-                <button type="button" class="prev-step" data-step="3" style="margin-top:10px">Previous</button>
-            <button type="submit">Order</button>
-        </div>
+
     </form>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const shippingMethodSelect = document.getElementById('shipping-method');
+    const totalSpan = document.getElementById('total');
+
+    // Assuming these values are available from your PHP backend
+    const subTotal = <?php echo $sub_total; ?>;
+    const taxRate = 0.13;
+
+    function updateTotal() {
+        const selectedShippingCost = parseFloat(shippingMethodSelect.value);
+        const tax = subTotal * taxRate;
+        const total = subTotal + tax + selectedShippingCost;
+
+        totalSpan.textContent = total.toFixed(2);
+    }
+
+    // Update total on page load
+    updateTotal();
+
+    // Update total when shipping method changes
+    shippingMethodSelect.addEventListener('change', updateTotal);
+});
+</script>
 <style>
       .error {
         border: 1px solid red;

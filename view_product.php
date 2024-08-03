@@ -1,4 +1,5 @@
 <?php
+
 include 'includes/header.php';
 include 'includes/navbar.php';
 include 'includes/config.php';
@@ -95,7 +96,7 @@ if ($product_id == 0) {
                 <input type="hidden" name="price" value="<?php echo $row['price']; ?>">
                 <label for="quantity">Quantity:</label>
                 <input type="number" id="quantity" name="quantity" value="1" min="1">
-                <button type="submit" onclick="updateCartCount()">Add to Cart</button>
+                <button type="submit" >Add to Cart</button>
             </form>
         </div>
     </div>
@@ -104,12 +105,28 @@ if ($product_id == 0) {
         function changeMainImage(src) {
             document.getElementById('main-product-image').src = src;
         }
-        function updateCartCount() {
-    var currentCount = parseInt(document.querySelector('.cart-count').textContent);
-    var quantity = parseInt(document.getElementById('quantity').value);
-    var newCount = currentCount + quantity;
-    document.querySelector('.cart-count').textContent = newCount;
-}
+        document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.add-to-cart-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get the form data
+        var formData = new FormData(this);
+
+        // Send the form data via AJAX
+        fetch('', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.text()).then(data => {
+            // Update the cart count here
+            var quantity = parseInt(document.getElementById('quantity').value);
+            var currentCount = parseInt(document.querySelector('.cart-count').textContent);
+            var newCount = currentCount + quantity;
+            document.querySelector('.cart-count').textContent = newCount;
+        }).catch(error => {
+            console.error('Error submitting form:', error);
+        });
+    });
+});
 
         </script>
 
