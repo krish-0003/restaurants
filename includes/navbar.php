@@ -22,7 +22,7 @@ if (isset($_SESSION['cart'])) {
         <ul class="nav-links">
             <?php
             $current_page = basename($_SERVER['PHP_SELF']);
-            if ($current_page !== 'register.php' && $current_page !== 'login.php') :
+            if ($current_page !== 'register.php' && $current_page !== 'login.php' && $current_page !== 'registration_success.php') :
             ?>
                 <li><a href="/restaurants/index.php"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="cart.php"><i class="fas fa-shopping-cart"></i> Cart <span class="cart-count"><?php echo $cart_count ?></span></a></li>

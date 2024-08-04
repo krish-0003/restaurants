@@ -41,28 +41,66 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
-
 <div class="offer-banner">
-    <h3>Special Offer: 20% off all menu items this weekend! Use code: WEEKEND20</h3>
+    <h3>New Customer Special: Get 20% off your first order! Use code: NEWBIE20</h3>
 </div>
 
-<div class="items-container">
-
-
+<h2>Special Offers</h2>
+<div class="items-container special-offers">
     <?php
-    // Fetch products with their categories and one of their images
+    // Fetch the first 4 products
     $query = "SELECT p.item_id, p.name, p.description, p.price, c.name AS category_name, i.image_url 
               FROM MenuItems p
               JOIN Categories c ON p.category_id = c.category_id
               LEFT JOIN Images i ON p.item_id = i.item_id
-              GROUP BY p.item_id";
+              GROUP BY p.item_id
+              LIMIT 4";
 
     $result = $mysqli->query($query);
 
     if ($result->num_rows > 0):
         while ($row = $result->fetch_assoc()):
             ?>
-            
+            <div class="product-card">
+                <div class="product-card__image">
+                <div class="special-offer-badge">Special Offer</div>
+
+                    <img src="<?php echo htmlspecialchars($row['image_url']); ?>"
+                        alt="<?php echo htmlspecialchars($row['name']); ?>">
+                </div>
+                <div class="product-card__info">
+                    <h2 class="product-card__title"><?php echo htmlspecialchars($row['name']); ?></h2>
+                    <p class="product-card__description"><?php echo htmlspecialchars($row['description']); ?></p>
+                    <div class="product-card__price-row">
+
+                        <span class="product-card__price">$<?php echo number_format($row['price'], 2); ?></span>
+                        <form action="view_product.php" method="get" style="margin: 0;">
+                            <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($row['item_id']); ?>">
+                            <button class="product-card__btn" type="submit">View</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endwhile;
+    endif;
+    ?>
+</div>
+<h2>All Products</h2>
+<div class="items-container all-products">
+    <?php
+    // Fetch the rest of the products
+    $query = "SELECT p.item_id, p.name, p.description, p.price, c.name AS category_name, i.image_url 
+              FROM MenuItems p
+              JOIN Categories c ON p.category_id = c.category_id
+              LEFT JOIN Images i ON p.item_id = i.item_id
+              GROUP BY p.item_id
+              LIMIT 4, 100"; // Start after the first 4, a
+
+    $result = $mysqli->query($query);
+
+    if ($result->num_rows > 0):
+        while ($row = $result->fetch_assoc()):
+            ?>
             <div class="product-card">
                 <div class="product-card__image">
                     <img src="<?php echo htmlspecialchars($row['image_url']); ?>"
@@ -104,7 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     margin: 0;
     font-size: 18px;
 }
-
 @media (max-width: 768px) {
     .offer-banner {
         width: 80%;  /* Added: Increase width on smaller screens for better readability */
@@ -112,6 +149,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     .offer-banner h3 {
         font-size: 16px;
+    }
+}
+
+
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.special-offer-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff6b6b;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    z-index: 1;
+    transition: transform 0.3s ease; /* Add transition to match the card */
+}
+
+
+@media (max-width: 768px) {
+    .special-offer-badge {
+        font-size: 12px;
+        padding: 3px 8px;
     }
 }
 
